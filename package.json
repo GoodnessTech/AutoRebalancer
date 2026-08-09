@@ -1,0 +1,33 @@
+{
+  "name": "auto-rebalancer",
+  "version": "1.0.0",
+  "description": "AutoRebalancer smart contract project for BOT Chain",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network botTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network botMainnet"
+  },
+  "keywords": [
+    "hardhat",
+    "solidity",
+    "autorebalancer",
+    "bot-chain",
+    "smart-contract"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "@openzeppelin/contracts": "^5.0.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.22.2"
+  }
+}

@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: autorebalancer-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: RPC_URL
+        value: https://rpc.bohr.life
+      - key: CONTRACT_ADDRESS
+        value: 0xC699A99E4833De2F31eAc502d7c2694aC19af2AF
+      - key: TOKEN_A_ADDRESS
+        value: 0xf647Ed610c806A6F05c3699D0AdF0001DfDb5274
+      - key: TOKEN_B_ADDRESS
+        value: 0x424A0aB461B8965F0552285cD8cB719C2887E199
+      - key: ALLOWED_ORIGIN
+        value: "*"
+      - key: EXECUTOR_PRIVATE_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
