@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { ethers } = require("ethers");
-const Anthropic = require("@anthropic-ai/sdk");
+const { GoogleGenAI } = require("@google/genai");
 const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
@@ -19,7 +19,7 @@ const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS || contractConfig.autoReba
 const TOKEN_A_ADDRESS = process.env.TOKEN_A_ADDRESS || contractConfig.tokenAAddress;
 const TOKEN_B_ADDRESS = process.env.TOKEN_B_ADDRESS || contractConfig.tokenBAddress;
 const EXECUTOR_PRIVATE_KEY = process.env.EXECUTOR_PRIVATE_KEY;
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
 
 // Read contract ABI
@@ -59,12 +59,12 @@ if (EXECUTOR_PRIVATE_KEY) {
   console.warn("⚠️ EXECUTOR_PRIVATE_KEY not provided in env. Transaction execution will be simulated or fallback to local provider signer if available.");
 }
 
-// Initialize Anthropic SDK client
-let anthropic;
-if (ANTHROPIC_API_KEY) {
-  anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+// Initialize Google Gemini SDK client
+let genAI;
+if (GEMINI_API_KEY) {
+  genAI = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 } else {
-  console.warn("⚠️ ANTHROPIC_API_KEY not set in env. AI rebalance checks will use local fallback simulation if no key is provided.");
+  console.warn("⚠️ GEMINI_API_KEY not set in env. AI rebalance checks will use local fallback simulation if no key is provided.");
 }
 
 const app = express();
@@ -177,7 +177,7 @@ app.post("/rebalance/check", async (req, res) => {
 
     let aiDecision;
 
-    if (anthropic) {
+    if (genAI) {
       const systemPrompt = `You are an automated portfolio rebalancing AI agent for an EVM smart contract on BOT Chain.
 Your job is to analyze portfolio token allocations, calculate target drift, and recommend appropriate trade actions.
 
@@ -203,16 +203,17 @@ CRITICAL INSTRUCTIONS:
 Determine whether to "sell_a_for_b", "sell_b_for_a", or "hold", suggest the trade percentage (amountPercent: 0-100), and provide concise reasoning.`;
 
       try {
-        console.log("🧠 Querying Anthropic Claude API (model: claude-sonnet-4-6)...");
-        const messageResponse = await anthropic.messages.create({
-          model: "claude-sonnet-4-6",
-          max_tokens: 500,
-          temperature: 0.2,
-          system: systemPrompt,
-          messages: [{ role: "user", content: userPrompt }]
+        console.log("🧠 Querying Google Gemini API (model: gemini-3.6-flash)...");
+        const geminiResponse = await genAI.models.generateContent({
+          model: "gemini-3.6-flash",
+          contents: userPrompt,
+          config: {
+            systemInstruction: systemPrompt,
+            temperature: 0.2
+          }
         });
 
-        const responseText = messageResponse.content[0].text.trim();
+        const responseText = (geminiResponse.text || "").trim();
         console.log(`💬 AI Raw Output: ${responseText}`);
 
         let cleanedJsonStr = responseText;
@@ -223,7 +224,7 @@ Determine whether to "sell_a_for_b", "sell_b_for_a", or "hold", suggest the trad
 
         aiDecision = JSON.parse(cleanedJsonStr);
       } catch (apiErr) {
-        console.warn(`⚠️ Anthropic API call failed (${apiErr.message}). Falling back to AI logic engine...`);
+        console.warn(`⚠️ Gemini API call failed (${apiErr.message}). Falling back to AI logic engine...`);
       }
     }
 
@@ -268,7 +269,7 @@ Determine whether to "sell_a_for_b", "sell_b_for_a", or "hold", suggest the trad
     // Calculate raw trade amount in wei based on amountPercent of source balance or drift
     const sourceBalWei = sellTokenAForB ? BigInt(status.tokenABalanceRaw) : BigInt(status.tokenBBalanceRaw);
     const amountPercent = Math.min(Math.max(Number(aiDecision.amountPercent) || 50, 1), 100);
-    
+
     // Estimate trade amount based on drift and requested percentage
     let calculatedAmountWei = (sourceBalWei * BigInt(amountPercent)) / 100n;
 
