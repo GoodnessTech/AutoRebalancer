@@ -1,0 +1,130 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_tokenA", "type": "address" },
+      { "internalType": "address", "name": "_tokenB", "type": "address" },
+      { "internalType": "address", "name": "_dexRouter", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "executor", "type": "address" }
+    ],
+    "name": "ExecutorSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "timestamp", "type": "uint256" },
+      { "indexed": false, "internalType": "bool", "name": "sellTokenAForB", "type": "bool" },
+      { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+      { "indexed": false, "internalType": "string", "name": "aiReasoning", "type": "string" }
+    ],
+    "name": "Rebalanced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "targetAllocationBps", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "maxTradeSize", "type": "uint256" }
+    ],
+    "name": "TargetSet",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "dexRouter",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bool", "name": "sellTokenAForB", "type": "bool" },
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "string", "name": "aiReasoning", "type": "string" }
+    ],
+    "name": "executeRebalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "executor",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getConfig",
+    "outputs": [
+      { "internalType": "uint256", "name": "_targetAllocationBps", "type": "uint256" },
+      { "internalType": "uint256", "name": "_maxTradeSize", "type": "uint256" },
+      { "internalType": "address", "name": "_executor", "type": "address" },
+      { "internalType": "address", "name": "_tokenA", "type": "address" },
+      { "internalType": "address", "name": "_tokenB", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxTradeSize",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "_executor", "type": "address" }],
+    "name": "setExecutor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_targetAllocationBps", "type": "uint256" },
+      { "internalType": "uint256", "name": "_maxTradeSize", "type": "uint256" }
+    ],
+    "name": "setTarget",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "targetAllocationBps",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenA",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenB",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
