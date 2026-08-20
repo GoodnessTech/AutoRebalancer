@@ -1,4 +1,5 @@
 {
+  "installCommand": "npm --prefix Autorebalncer-Frontend install",
   "buildCommand": "npm --prefix Autorebalncer-Frontend run build",
   "outputDirectory": "Autorebalncer-Frontend/dist",
   "cleanUrls": true,
