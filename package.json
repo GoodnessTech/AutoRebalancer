@@ -2,7 +2,6 @@
   "name": "auto-rebalancer",
   "version": "1.0.0",
   "description": "AutoRebalancer smart contract and AI executor dApp for BOT Chain",
-  "main": "server.js",
   "scripts": {
     "postinstall": "npm --prefix Autorebalncer-Frontend install",
     "start": "node server.js",
