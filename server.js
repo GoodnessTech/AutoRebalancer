@@ -87,6 +87,24 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root / healthcheck & static frontend serving if built
+const frontendDist = path.join(__dirname, "Autorebalncer-Frontend", "dist");
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+}
+
+app.get("/", (req, res) => {
+  if (fs.existsSync(path.join(frontendDist, "index.html"))) {
+    return res.sendFile(path.join(frontendDist, "index.html"));
+  }
+  res.json({
+    name: "AutoRebalancer AI Backend",
+    status: "online",
+    network: "BOT Chain Mainnet (Chain ID 677)",
+    contract: CONTRACT_ADDRESS
+  });
+});
+
 // Helper function to fetch current contract & portfolio status
 async function getPortfolioStatus(customAddress) {
   if (!CONTRACT_ADDRESS) {

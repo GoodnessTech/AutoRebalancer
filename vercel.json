@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm --prefix Autorebalncer-Frontend run build",
+  "outputDirectory": "Autorebalncer-Frontend/dist",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
