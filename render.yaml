@@ -9,13 +9,15 @@ services:
       - key: PORT
         value: 3001
       - key: RPC_URL
-        value: https://rpc.bohr.life
+        value: https://rpc.botchain.ai
       - key: CONTRACT_ADDRESS
-        value: 0xC699A99E4833De2F31eAc502d7c2694aC19af2AF
+        value: 0x1672fBF0E2322e8662D2242C1aC10DAB37D11223
       - key: TOKEN_A_ADDRESS
-        value: 0xf647Ed610c806A6F05c3699D0AdF0001DfDb5274
+        value: 0x546307af427902A75771434Df831d88219784E19
       - key: TOKEN_B_ADDRESS
-        value: 0x424A0aB461B8965F0552285cD8cB719C2887E199
+        value: 0xef8DC669ECa13E612b67Ff09478352E85bD6CC53
+      - key: DEX_ROUTER_ADDRESS
+        value: 0x143b0Cf8A34B7bFD794d64e0E565155f0904902B
       - key: ALLOWED_ORIGIN
         value: "*"
       - key: EXECUTOR_PRIVATE_KEY

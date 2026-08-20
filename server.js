@@ -88,7 +88,7 @@ app.use((req, res, next) => {
 });
 
 // Helper function to fetch current contract & portfolio status
-async function getPortfolioStatus() {
+async function getPortfolioStatus(customAddress) {
   if (!CONTRACT_ADDRESS) {
     throw new Error("CONTRACT_ADDRESS not configured.");
   }
@@ -104,14 +104,15 @@ async function getPortfolioStatus() {
   const tokenBAddr = config._tokenB || config[4] || TOKEN_B_ADDRESS;
 
   const ownerAddress = await contract.owner();
+  const targetAccount = (customAddress && ethers.isAddress(customAddress)) ? customAddress : ownerAddress;
 
-  // Read ERC20 token balances of contract owner
+  // Read ERC20 token balances of target account
   const tokenAContract = new ethers.Contract(tokenAAddr, ERC20_ABI, provider);
   const tokenBContract = new ethers.Contract(tokenBAddr, ERC20_ABI, provider);
 
   const [balAWei, balBWei] = await Promise.all([
-    tokenAContract.balanceOf(ownerAddress),
-    tokenBContract.balanceOf(ownerAddress)
+    tokenAContract.balanceOf(targetAccount),
+    tokenBContract.balanceOf(targetAccount)
   ]);
 
   const balA = Number(ethers.formatEther(balAWei));
@@ -131,14 +132,29 @@ async function getPortfolioStatus() {
   }
 
   const driftBps = currentAllocationBps - targetAllocationBps;
+  const botPct = Number((currentAllocationBps / 100).toFixed(1));
+  const usdcPct = Number((100 - botPct).toFixed(1));
+  const targetBotPct = Number((targetAllocationBps / 100).toFixed(1));
+  const targetUsdcPct = Number((100 - targetBotPct).toFixed(1));
+  const driftPct = Number((driftBps / 100).toFixed(1));
 
   return {
     contractAddress: CONTRACT_ADDRESS,
     ownerAddress,
+    accountAddress: targetAccount,
     executorAddress,
     targetAllocationBps,
     currentAllocationBps,
     driftBps,
+    currentAllocation: { botPct, usdcPct },
+    targetAllocation: { botPct: targetBotPct, usdcPct: targetUsdcPct },
+    driftPct,
+    balances: {
+      bot: balAWei.toString(),
+      usdc: balBWei.toString(),
+      botFormatted: balA.toFixed(4),
+      usdcFormatted: balB.toFixed(4)
+    },
     tokenABalance: balA.toFixed(4),
     tokenBBalance: balB.toFixed(4),
     tokenABalanceRaw: balAWei.toString(),
@@ -154,10 +170,11 @@ async function getPortfolioStatus() {
 // Endpoint: GET /status
 app.get("/status", async (req, res) => {
   try {
-    const status = await getPortfolioStatus();
+    const status = await getPortfolioStatus(req.query.address);
     res.json({
       success: true,
-      data: status
+      data: status,
+      ...status
     });
   } catch (error) {
     console.error("❌ Error fetching status:", error);
@@ -172,7 +189,7 @@ app.get("/status", async (req, res) => {
 app.post("/rebalance/check", async (req, res) => {
   try {
     console.log("🤖 Initiating AI Rebalance Check...");
-    const status = await getPortfolioStatus();
+    const status = await getPortfolioStatus(req.body?.address);
     console.log(`📊 Current Allocation: ${(status.currentAllocationBps / 100).toFixed(2)}% | Target: ${(status.targetAllocationBps / 100).toFixed(2)}% | Drift: ${(status.driftBps / 100).toFixed(2)}%`);
 
     let aiDecision;
@@ -258,8 +275,10 @@ Determine whether to "sell_a_for_b", "sell_b_for_a", or "hold", suggest the trad
       return res.json({
         success: true,
         executed: false,
+        status: "hold",
+        reasoning: aiDecision.reasoning,
         decision: aiDecision,
-        status
+        portfolioStatus: status
       });
     }
 
@@ -329,6 +348,8 @@ Determine whether to "sell_a_for_b", "sell_b_for_a", or "hold", suggest the trad
     return res.json({
       success: true,
       executed: true,
+      status: "trade",
+      reasoning: aiDecision.reasoning,
       decision: aiDecision,
       amountIn: amountInWei.toString(),
       amountInFormatted: ethers.formatEther(amountInWei),

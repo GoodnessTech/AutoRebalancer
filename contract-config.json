@@ -1,10 +1,11 @@
 {
-  "network": "botTestnet",
-  "chainId": 968,
-  "rpcUrl": "https://rpc.bohr.life",
-  "autoRebalancerAddress": "0xC699A99E4833De2F31eAc502d7c2694aC19af2AF",
-  "tokenAAddress": "0xf647Ed610c806A6F05c3699D0AdF0001DfDb5274",
-  "tokenBAddress": "0x424A0aB461B8965F0552285cD8cB719C2887E199",
+  "network": "botMainnet",
+  "chainId": 677,
+  "rpcUrl": "https://rpc.botchain.ai",
+  "autoRebalancerAddress": "0x1672fBF0E2322e8662D2242C1aC10DAB37D11223",
+  "tokenAAddress": "0x546307af427902A75771434Df831d88219784E19",
+  "tokenBAddress": "0xef8DC669ECa13E612b67Ff09478352E85bD6CC53",
+  "executorAddress": "0xE9a1AABA8061dbcec156Fef994c476e9F91D9B6d",
   "decimals": 18,
   "abiPath": "./artifacts/contracts/AutoRebalancer.sol/AutoRebalancer.json"
 }

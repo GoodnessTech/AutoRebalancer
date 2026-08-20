@@ -1,21 +1,26 @@
 {
   "name": "auto-rebalancer",
   "version": "1.0.0",
-  "description": "AutoRebalancer smart contract project for BOT Chain",
-  "main": "index.js",
+  "description": "AutoRebalancer smart contract and AI executor dApp for BOT Chain",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:testnet": "hardhat run scripts/deploy.js --network botTestnet",
-    "deploy:mainnet": "hardhat run scripts/deploy.js --network botMainnet"
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network botMainnet",
+    "dev:frontend": "npm --prefix Autorebalncer-Frontend run dev",
+    "build:frontend": "npm --prefix Autorebalncer-Frontend run build",
+    "typecheck:frontend": "npm --prefix Autorebalncer-Frontend run typecheck"
   },
   "keywords": [
     "hardhat",
     "solidity",
     "autorebalancer",
     "bot-chain",
-    "smart-contract"
+    "smart-contract",
+    "ai-agent",
+    "gemini"
   ],
   "author": "",
   "license": "MIT",
