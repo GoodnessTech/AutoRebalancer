@@ -124,14 +124,38 @@ async function getPortfolioStatus(customAddress) {
   const ownerAddress = await contract.owner();
   const targetAccount = (customAddress && ethers.isAddress(customAddress)) ? customAddress : ownerAddress;
 
-  // Read ERC20 token balances of target account
-  const tokenAContract = new ethers.Contract(tokenAAddr, ERC20_ABI, provider);
-  const tokenBContract = new ethers.Contract(tokenBAddr, ERC20_ABI, provider);
+  // Read token balances of target account safely
+  let balAWei = 0n;
+  let balBWei = 0n;
 
-  const [balAWei, balBWei] = await Promise.all([
-    tokenAContract.balanceOf(targetAccount),
-    tokenBContract.balanceOf(targetAccount)
-  ]);
+  if (tokenAAddr && tokenAAddr !== ethers.ZeroAddress) {
+    try {
+      const tokenAContract = new ethers.Contract(tokenAAddr, ERC20_ABI, provider);
+      balAWei = await tokenAContract.balanceOf(targetAccount);
+    } catch (errA) {
+      // If ERC20 balanceOf fails, fallback to native BOT balance
+      try {
+        balAWei = await provider.getBalance(targetAccount);
+      } catch (e) {
+        balAWei = 0n;
+      }
+    }
+  } else {
+    try {
+      balAWei = await provider.getBalance(targetAccount);
+    } catch (e) {
+      balAWei = 0n;
+    }
+  }
+
+  if (tokenBAddr && tokenBAddr !== ethers.ZeroAddress) {
+    try {
+      const tokenBContract = new ethers.Contract(tokenBAddr, ERC20_ABI, provider);
+      balBWei = await tokenBContract.balanceOf(targetAccount);
+    } catch (errB) {
+      balBWei = 0n;
+    }
+  }
 
   const balA = Number(ethers.formatEther(balAWei));
   const balB = Number(ethers.formatEther(balBWei));
@@ -144,7 +168,7 @@ async function getPortfolioStatus(customAddress) {
   const valB = balB;
   const totalVal = valA + valB;
 
-  let currentAllocationBps = 0;
+  let currentAllocationBps = targetAllocationBps || 5000;
   if (totalVal > 0) {
     currentAllocationBps = Math.round((valA / totalVal) * 10000);
   }
