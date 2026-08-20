@@ -62,7 +62,7 @@ function App() {
         </div>
 
         <footer className="mt-12 flex flex-col gap-2 border-t border-gray-200 pt-5 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
-          <span>AutoRebalance · BOT Chain Testnet</span>
+          <span>AutoRebalance · BOT Chain Mainnet</span>
           <span>AI decisions are presented for demonstration purposes.</span>
         </footer>
       </main>

@@ -81,7 +81,7 @@ export function PrimaryAction({ onResult }: PrimaryActionProps) {
         </div>
         <h3 className="text-lg font-bold text-gray-800 mb-2">Wallet Not Connected</h3>
         <p className="text-sm text-gray-500 max-w-md mx-auto">
-          Connect your wallet to BOT Chain Testnet to run the autonomous AI rebalancing agent.
+          Connect your wallet to BOT Chain Mainnet to run the autonomous AI rebalancing agent.
         </p>
       </div>
     );
